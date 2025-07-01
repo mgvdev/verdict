@@ -1,0 +1,51 @@
+{
+  "name": "@mgvdev/verdict",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "A lightweight, structured JSON decision tree library for Node.js applications",
+  "private": true,
+  "packageManager": "pnpm@10.11.0",
+  "author": "Maxence Guyonvarho <contact@mgvdev.io>",
+  "license": "MIT",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "pnpm clean && tsup",
+    "clean": "del-cli build",
+    "lint": "biome check",
+    "lint:fix": "biome check --write --unsafe",
+    "test": "NODE_NO_WARNINGS=1 node --enable-source-maps --loader=ts-node/esm bin/test.ts",
+    "prepare": "husky"
+  },
+  "keywords": [
+    "decision",
+    "tree",
+    "json",
+    "structured",
+    "lightweight",
+    "rules",
+    "engine"
+  ],
+  "lint-staged": {
+    "*.{js,ts,json,md}": [
+      "biome check"
+    ]
+  },
+  "devDependencies": {
+    "@adonisjs/tsconfig": "^1.4.1",
+    "@biomejs/biome": "2.0.5",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@japa/expect": "^3.0.4",
+    "@japa/runner": "^4.2.0",
+    "@japa/spec-reporter": "^1.3.3",
+    "@swc/core": "^1.12.5",
+    "c8": "^10.1.3",
+    "del-cli": "^6.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "release-it": "^19.0.3",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  }
+}
