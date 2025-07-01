@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "type": "module",
   "description": "A lightweight, structured JSON decision tree library for Node.js applications",
-  "private": true,
   "packageManager": "pnpm@10.11.0",
   "author": "Maxence Guyonvarho <contact@mgvdev.io>",
   "license": "MIT",
@@ -12,6 +11,12 @@
     "url": "https://github.com/mgvdev/verdict.git"
   },
   "main": "build/index.js",
+  "exports": {
+    ".": "./build/index.js"
+  },
+  "files": [
+    "build"
+  ],
   "scripts": {
     "build": "pnpm clean && tsup",
     "clean": "del-cli build",
