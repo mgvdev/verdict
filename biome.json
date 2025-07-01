@@ -8,7 +8,7 @@
       "*.js",
       "*.json"
     ],
-    "ignoreUnknown": false
+    "ignoreUnknown": true
   },
   "linter": {
     "enabled": true,

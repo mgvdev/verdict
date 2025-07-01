@@ -39,14 +39,17 @@ __export(index_exports, {
   all: () => all,
   and: () => and,
   any: () => any,
+  compareValues: () => compareValues,
   eq: () => eq,
   getValueFromPath: () => getValueFromPath,
   gt: () => gt,
   gte: () => gte,
+  isDateLike: () => isDateLike,
   lt: () => lt,
   lte: () => lte,
   ne: () => ne,
   none: () => none,
+  normalizeDate: () => normalizeDate,
   not: () => not,
   notIn: () => notIn,
   or: () => or
@@ -134,6 +137,96 @@ function getValueFromPathWithWildcard(obj, path) {
     }
   }
   return current;
+}
+function isDateLike(value) {
+  if (value instanceof Date) {
+    return !Number.isNaN(value.getTime());
+  }
+  if (typeof value === "string") {
+    const isoDateRegex = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?)?$/;
+    if (isoDateRegex.test(value)) {
+      const date = new Date(value);
+      return !Number.isNaN(date.getTime());
+    }
+  }
+  if (typeof value === "number") {
+    const date = new Date(value);
+    return !Number.isNaN(date.getTime()) && value > 0;
+  }
+  return false;
+}
+function normalizeDate(value) {
+  if (value instanceof Date) {
+    return value;
+  }
+  if (typeof value === "string") {
+    const isoDateRegex = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?)?$/;
+    if (isoDateRegex.test(value)) {
+      const date = new Date(value);
+      if (!Number.isNaN(date.getTime())) {
+        return date;
+      }
+    }
+  }
+  if (typeof value === "number" && value > 0) {
+    const date = new Date(value);
+    if (!Number.isNaN(date.getTime())) {
+      return date;
+    }
+  }
+  return value;
+}
+function compareValues(left, right, operator) {
+  const normalizedLeft = normalizeDate(left);
+  const normalizedRight = normalizeDate(right);
+  if (normalizedLeft instanceof Date && normalizedRight instanceof Date) {
+    const leftTime = normalizedLeft.getTime();
+    const rightTime = normalizedRight.getTime();
+    switch (operator) {
+      case ">":
+        return leftTime > rightTime;
+      case "<":
+        return leftTime < rightTime;
+      case ">=":
+        return leftTime >= rightTime;
+      case "<=":
+        return leftTime <= rightTime;
+      case "===":
+        return leftTime === rightTime;
+      case "!==":
+        return leftTime !== rightTime;
+      default:
+        return false;
+    }
+  }
+  switch (operator) {
+    case ">":
+      if ((typeof left === "number" || typeof left === "string") && (typeof right === "number" || typeof right === "string")) {
+        return left > right;
+      }
+      return false;
+    case "<":
+      if ((typeof left === "number" || typeof left === "string") && (typeof right === "number" || typeof right === "string")) {
+        return left < right;
+      }
+      return false;
+    case ">=":
+      if ((typeof left === "number" || typeof left === "string") && (typeof right === "number" || typeof right === "string")) {
+        return left >= right;
+      }
+      return false;
+    case "<=":
+      if ((typeof left === "number" || typeof left === "string") && (typeof right === "number" || typeof right === "string")) {
+        return left <= right;
+      }
+      return false;
+    case "===":
+      return left === right;
+    case "!==":
+      return left !== right;
+    default:
+      return false;
+  }
 }
 
 // src/operator/all.ts
@@ -438,7 +531,7 @@ var Eq = class {
     };
     const leftResult = resolveValue(this.left);
     const rightResult = resolveValue(this.right);
-    return leftResult === rightResult;
+    return compareValues(leftResult, rightResult, "===");
   }
   /**
    * Converts the equality operator to its JSON representation.
@@ -509,10 +602,7 @@ var Gt = class {
     };
     const leftResult = resolveValue(this.left);
     const rightResult = resolveValue(this.right);
-    if ((typeof leftResult === "number" || typeof leftResult === "string") && (typeof rightResult === "number" || typeof rightResult === "string")) {
-      return leftResult > rightResult;
-    }
-    return false;
+    return compareValues(leftResult, rightResult, ">");
   }
   /**
    * Converts the greater than operator to its JSON representation.
@@ -561,10 +651,7 @@ var Gte = class {
     };
     const leftResult = resolveValue(this.left);
     const rightResult = resolveValue(this.right);
-    if ((typeof leftResult === "number" || typeof leftResult === "string") && (typeof rightResult === "number" || typeof rightResult === "string")) {
-      return leftResult >= rightResult;
-    }
-    return false;
+    return compareValues(leftResult, rightResult, ">=");
   }
   toJSON() {
     return {
@@ -671,10 +758,7 @@ var Lt = class {
     };
     const leftResult = resolveValue(this.left);
     const rightResult = resolveValue(this.right);
-    if ((typeof leftResult === "number" || typeof leftResult === "string") && (typeof rightResult === "number" || typeof rightResult === "string")) {
-      return leftResult < rightResult;
-    }
-    return false;
+    return compareValues(leftResult, rightResult, "<");
   }
   toJSON() {
     return {
@@ -708,10 +792,7 @@ var Lte = class {
     };
     const leftResult = resolveValue(this.left);
     const rightResult = resolveValue(this.right);
-    if ((typeof leftResult === "number" || typeof leftResult === "string") && (typeof rightResult === "number" || typeof rightResult === "string")) {
-      return leftResult <= rightResult;
-    }
-    return false;
+    return compareValues(leftResult, rightResult, "<=");
   }
   toJSON() {
     return {
@@ -745,7 +826,7 @@ var Ne = class {
     };
     const leftResult = resolveValue(this.left);
     const rightResult = resolveValue(this.right);
-    return leftResult !== rightResult;
+    return compareValues(leftResult, rightResult, "!==");
   }
   toJSON() {
     return {
@@ -1141,14 +1222,17 @@ var RuleSerializer = class {
   all,
   and,
   any,
+  compareValues,
   eq,
   getValueFromPath,
   gt,
   gte,
+  isDateLike,
   lt,
   lte,
   ne,
   none,
+  normalizeDate,
   not,
   notIn,
   or

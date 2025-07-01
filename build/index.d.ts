@@ -1245,5 +1245,28 @@ declare class Or implements OperatorInterace {
  * ```
  */
 declare function getValueFromPath(obj: unknown, path: string): unknown;
+/**
+ * Checks if a value is a valid date string, timestamp, or Date object.
+ *
+ * @param value - The value to check
+ * @returns True if the value represents a date
+ */
+declare function isDateLike(value: unknown): boolean;
+/**
+ * Converts a date-like value to a Date object for comparison.
+ *
+ * @param value - The value to convert (string, number, or Date)
+ * @returns A Date object or the original value if not date-like
+ */
+declare function normalizeDate(value: unknown): Date | unknown;
+/**
+ * Compares two values, handling date comparisons when appropriate.
+ *
+ * @param left - Left operand
+ * @param right - Right operand
+ * @param operator - The comparison operator ('>', '<', '>=', '<=', '===', '!==')
+ * @returns The result of the comparison
+ */
+declare function compareValues(left: unknown, right: unknown, operator: string): boolean;
 
-export { All, And, Any, Engine, Eq, Gt, Gte, In, InOperator, Lt, Lte, Ne, None, Not, NotInOperator, Or, type RuleJson, RuleSerializer, all, and, any, eq, getValueFromPath, gt, gte, lt, lte, ne, none, not, notIn, or };
+export { All, And, Any, Engine, Eq, Gt, Gte, In, InOperator, Lt, Lte, Ne, None, Not, NotInOperator, Or, type RuleJson, RuleSerializer, all, and, any, compareValues, eq, getValueFromPath, gt, gte, isDateLike, lt, lte, ne, none, normalizeDate, not, notIn, or };
