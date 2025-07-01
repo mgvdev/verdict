@@ -7,6 +7,10 @@
   "packageManager": "pnpm@10.11.0",
   "author": "Maxence Guyonvarho <contact@mgvdev.io>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mgvdev/verdict.git"
+  },
   "main": "build/index.js",
   "scripts": {
     "build": "pnpm clean && tsup",
