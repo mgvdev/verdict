@@ -1,5 +1,5 @@
 import type { RuleJson } from "../serializer.js";
-import { getValueFromPath } from "../utils.js";
+import { compareValues, getValueFromPath } from "../utils.js";
 import type { OperatorInterace, OperatorValue } from "./operator_interace.js";
 
 export function gte(
@@ -31,15 +31,7 @@ export class Gte implements OperatorInterace {
     const leftResult = resolveValue(this.left);
     const rightResult = resolveValue(this.right);
 
-    // Type guard for comparison - both operands must be numbers or strings
-    if (
-      (typeof leftResult === "number" || typeof leftResult === "string") &&
-      (typeof rightResult === "number" || typeof rightResult === "string")
-    ) {
-      return leftResult >= rightResult;
-    }
-
-    return false;
+    return compareValues(leftResult, rightResult, ">=");
   }
 
   toJSON(): RuleJson {

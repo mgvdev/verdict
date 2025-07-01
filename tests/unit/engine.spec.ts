@@ -462,3 +462,136 @@ test.group("Array Operators", (_group) => {
     expect(hasHighEarner).toBe(true);
   });
 });
+
+test.group("Date Comparisons", (_group) => {
+  const engine = new Engine();
+
+  test("should compare ISO date strings with eq", ({ expect }) => {
+    const rule = eq("2023-01-15", "2023-01-15");
+    expect(engine.evaluate(rule)).toBe(true);
+  });
+
+  test("should compare different ISO date strings with eq", ({ expect }) => {
+    const rule = eq("2023-01-15", "2023-01-16");
+    expect(engine.evaluate(rule)).toBe(false);
+  });
+
+  test("should compare ISO date strings with ne", ({ expect }) => {
+    const rule = ne("2023-01-15", "2023-01-16");
+    expect(engine.evaluate(rule)).toBe(true);
+  });
+
+  test("should compare ISO date strings with gt", ({ expect }) => {
+    const rule = gt("2023-01-16", "2023-01-15");
+    expect(engine.evaluate(rule)).toBe(true);
+  });
+
+  test("should compare ISO date strings with gt (false case)", ({ expect }) => {
+    const rule = gt("2023-01-15", "2023-01-16");
+    expect(engine.evaluate(rule)).toBe(false);
+  });
+
+  test("should compare ISO date strings with gte", ({ expect }) => {
+    const rule = gte("2023-01-16", "2023-01-15");
+    expect(engine.evaluate(rule)).toBe(true);
+  });
+
+  test("should compare equal ISO date strings with gte", ({ expect }) => {
+    const rule = gte("2023-01-15", "2023-01-15");
+    expect(engine.evaluate(rule)).toBe(true);
+  });
+
+  test("should compare ISO date strings with lt", ({ expect }) => {
+    const rule = lt("2023-01-15", "2023-01-16");
+    expect(engine.evaluate(rule)).toBe(true);
+  });
+
+  test("should compare ISO date strings with lt (false case)", ({ expect }) => {
+    const rule = lt("2023-01-16", "2023-01-15");
+    expect(engine.evaluate(rule)).toBe(false);
+  });
+
+  test("should compare ISO date strings with lte", ({ expect }) => {
+    const rule = lte("2023-01-15", "2023-01-16");
+    expect(engine.evaluate(rule)).toBe(true);
+  });
+
+  test("should compare equal ISO date strings with lte", ({ expect }) => {
+    const rule = lte("2023-01-15", "2023-01-15");
+    expect(engine.evaluate(rule)).toBe(true);
+  });
+
+  test("should compare ISO datetime strings", ({ expect }) => {
+    const rule = gt("2023-01-15T14:30:00Z", "2023-01-15T12:30:00Z");
+    expect(engine.evaluate(rule)).toBe(true);
+  });
+
+  test("should compare dates from context", ({ expect }) => {
+    const context = {
+      user: {
+        createdAt: "2023-01-15T10:00:00Z",
+        lastLogin: "2023-01-15T14:30:00Z",
+      },
+    };
+    const rule = gt("user.lastLogin", "user.createdAt");
+    expect(engine.evaluate(rule, context)).toBe(true);
+  });
+
+  test("should compare context date with literal", ({ expect }) => {
+    const context = {
+      user: {
+        birthDate: "1990-05-15",
+      },
+    };
+    const rule = lt("user.birthDate", "2000-01-01");
+    expect(engine.evaluate(rule, context)).toBe(true);
+  });
+
+  test("should compare Date objects", ({ expect }) => {
+    const date1 = new Date("2023-01-15");
+    const date2 = new Date("2023-01-16");
+    const rule = lt(date1, date2);
+    expect(engine.evaluate(rule)).toBe(true);
+  });
+
+  test("should compare timestamps", ({ expect }) => {
+    const timestamp1 = new Date("2023-01-15").getTime();
+    const timestamp2 = new Date("2023-01-16").getTime();
+    const rule = lt(timestamp1, timestamp2);
+    expect(engine.evaluate(rule)).toBe(true);
+  });
+
+  test("should handle mixed date formats", ({ expect }) => {
+    const context = {
+      event: {
+        startDate: "2023-01-15",
+        endTimestamp: new Date("2023-01-20").getTime(),
+      },
+    };
+    const rule = lt("event.startDate", "event.endTimestamp");
+    expect(engine.evaluate(rule, context)).toBe(true);
+  });
+
+  test("should serialize and deserialize date comparisons", ({ expect }) => {
+    const serializer = new RuleSerializer();
+    const originalRule = and(
+      gte("user.createdAt", "2023-01-01"),
+      lt("user.createdAt", "2024-01-01")
+    );
+    const jsonRule = serializer.serialize(originalRule);
+    const deserializedRule = serializer.deserialize(jsonRule);
+
+    const context = { user: { createdAt: "2023-06-15" } };
+    expect(engine.evaluate(deserializedRule, context)).toBe(true);
+  });
+
+  test("should handle invalid date strings gracefully", ({ expect }) => {
+    const rule = eq("invalid-date", "2023-01-15");
+    expect(engine.evaluate(rule)).toBe(false);
+  });
+
+  test("should not treat regular strings as dates", ({ expect }) => {
+    const rule = gt("apple", "banana");
+    expect(engine.evaluate(rule)).toBe(false);
+  });
+});

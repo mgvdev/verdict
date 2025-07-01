@@ -87,6 +87,12 @@ gt('user.age', 18)                // user.age > 18
 gte('user.score', 80)             // user.score >= 80
 lt('user.attempts', 3)            // user.attempts < 3
 lte('user.balance', 1000)         // user.balance <= 1000
+
+// Date and DateTime comparisons (native support)
+gt('user.createdAt', '2023-01-01')              // Date strings (ISO format)
+lt('event.endDate', '2024-12-31T23:59:59Z')     // DateTime with timezone
+gte('user.lastLogin', new Date('2023-06-15'))   // Date objects
+lte('session.expires', Date.now())              // Timestamps
 ```
 
 #### Logical Operators
@@ -232,7 +238,7 @@ const context = {
 };
 
 const hasAccess = engine.evaluate(showNewFeature, context);
-console.log(showFeature); // true
+console.log(hasAccess); // true
 ```
 
 ### Array-Based Rules
@@ -272,6 +278,85 @@ const context = {
 const canEdit = engine.evaluate(canEditPosts, context);        // true
 const validPerms = engine.evaluate(hasValidPermissions, context); // true
 const safeUser = engine.evaluate(isSafeUser, context);         // true
+```
+
+### Date and DateTime Comparisons
+
+Verdict provides native support for comparing dates and datetimes in various formats:
+
+```typescript
+import { Engine, eq, gt, gte, lt, lte, and, or } from '@mgvdev/verdict';
+
+const engine = new Engine();
+
+// Support for various date formats
+const dateRules = and(
+  // ISO date strings
+  gte('user.birthDate', '1990-01-01'),
+  lt('user.birthDate', '2005-12-31'),
+  
+  // ISO datetime strings with timezone
+  gt('event.startTime', '2023-06-15T10:00:00Z'),
+  lte('event.endTime', '2023-06-15T18:00:00Z'),
+  
+  // Date objects
+  gt('user.lastLogin', new Date('2023-01-01')),
+  
+  // Timestamps (milliseconds)
+  lt('session.expiresAt', Date.now() + 3600000) // 1 hour from now
+);
+
+// Real-world example: Event scheduling
+const eventContext = {
+  event: {
+    startTime: '2023-06-15T14:30:00Z',
+    endTime: '2023-06-15T16:30:00Z',
+    registrationDeadline: '2023-06-10T23:59:59Z'
+  },
+  user: {
+    registeredAt: '2023-06-05T10:00:00Z',
+    lastLogin: new Date('2023-06-14T08:00:00Z')
+  },
+  currentTime: Date.now()
+};
+
+// Check if user can access event
+const canAccessEvent = and(
+  // Event hasn't started yet or is currently running
+  gte('event.endTime', 'currentTime'),
+  
+  // User registered before deadline
+  lt('user.registeredAt', 'event.registrationDeadline'),
+  
+  // User was active recently
+  gt('user.lastLogin', '2023-06-01T00:00:00Z')
+);
+
+const hasAccess = engine.evaluate(canAccessEvent, eventContext); // true
+
+// Comparing dates from context
+const dateComparison = and(
+  gt('user.lastLogin', 'user.registeredAt'),    // Last login after registration
+  lt('event.startTime', 'event.endTime')        // Valid event duration
+);
+
+const isValidTiming = engine.evaluate(dateComparison, eventContext); // true
+```
+
+#### Supported Date Formats
+
+- **ISO Date Strings**: `'2023-01-15'`, `'2023-01-15T14:30:00Z'`
+- **Date Objects**: `new Date('2023-01-15')`
+- **Timestamps**: `1673740800000` (milliseconds since epoch)
+- **Mixed Formats**: You can compare different formats together
+
+```typescript
+// Mixed format comparison example
+const mixedDateRule = and(
+  gt('2023-06-15', '2023-01-01'),                    // String vs String
+  lt(new Date('2023-06-15'), '2023-12-31'),          // Date vs String  
+  gte('user.timestamp', new Date('2023-01-01').getTime()) // String vs Timestamp
+);
 ```
 
 ## 🔄 Serialization
@@ -443,12 +528,18 @@ class Engine {
 ### Operators
 
 #### Comparison Operators
-- `eq(left, right)` - Equality comparison
-- `ne(left, right)` - Inequality comparison
-- `gt(left, right)` - Greater than
-- `gte(left, right)` - Greater than or equal
-- `lt(left, right)` - Less than
-- `lte(left, right)` - Less than or equal
+- `eq(left, right)` - Equality comparison (supports dates)
+- `ne(left, right)` - Inequality comparison (supports dates)
+- `gt(left, right)` - Greater than (supports dates)
+- `gte(left, right)` - Greater than or equal (supports dates)
+- `lt(left, right)` - Less than (supports dates)
+- `lte(left, right)` - Less than or equal (supports dates)
+
+**Date Support**: All comparison operators natively support:
+- ISO date strings (`'2023-01-15'`, `'2023-01-15T14:30:00Z'`)
+- JavaScript Date objects (`new Date('2023-01-15')`)
+- Unix timestamps (`1673740800000`)
+- Mixed format comparisons
 
 #### Logical Operators
 - `and(...conditions)` - Logical AND

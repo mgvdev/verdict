@@ -136,3 +136,145 @@ function getValueFromPathWithWildcard(obj: unknown, path: string): unknown {
 
   return current;
 }
+
+/**
+ * Checks if a value is a valid date string, timestamp, or Date object.
+ *
+ * @param value - The value to check
+ * @returns True if the value represents a date
+ */
+export function isDateLike(value: unknown): boolean {
+  if (value instanceof Date) {
+    return !Number.isNaN(value.getTime());
+  }
+
+  if (typeof value === "string") {
+    // Check for ISO date format (YYYY-MM-DD or YYYY-MM-DDTHH:mm:ss)
+    const isoDateRegex = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?)?$/;
+    if (isoDateRegex.test(value)) {
+      const date = new Date(value);
+      return !Number.isNaN(date.getTime());
+    }
+  }
+
+  if (typeof value === "number") {
+    // Check if it's a valid timestamp (reasonable range)
+    const date = new Date(value);
+    return !Number.isNaN(date.getTime()) && value > 0;
+  }
+
+  return false;
+}
+
+/**
+ * Converts a date-like value to a Date object for comparison.
+ *
+ * @param value - The value to convert (string, number, or Date)
+ * @returns A Date object or the original value if not date-like
+ */
+export function normalizeDate(value: unknown): Date | unknown {
+  if (value instanceof Date) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const isoDateRegex = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?)?$/;
+    if (isoDateRegex.test(value)) {
+      const date = new Date(value);
+      if (!Number.isNaN(date.getTime())) {
+        return date;
+      }
+    }
+  }
+
+  if (typeof value === "number" && value > 0) {
+    const date = new Date(value);
+    if (!Number.isNaN(date.getTime())) {
+      return date;
+    }
+  }
+
+  return value;
+}
+
+/**
+ * Compares two values, handling date comparisons when appropriate.
+ *
+ * @param left - Left operand
+ * @param right - Right operand
+ * @param operator - The comparison operator ('>', '<', '>=', '<=', '===', '!==')
+ * @returns The result of the comparison
+ */
+export function compareValues(
+  left: unknown,
+  right: unknown,
+  operator: string
+): boolean {
+  const normalizedLeft = normalizeDate(left);
+  const normalizedRight = normalizeDate(right);
+
+  // If both values are dates, compare them as dates
+  if (normalizedLeft instanceof Date && normalizedRight instanceof Date) {
+    const leftTime = normalizedLeft.getTime();
+    const rightTime = normalizedRight.getTime();
+
+    switch (operator) {
+      case ">":
+        return leftTime > rightTime;
+      case "<":
+        return leftTime < rightTime;
+      case ">=":
+        return leftTime >= rightTime;
+      case "<=":
+        return leftTime <= rightTime;
+      case "===":
+        return leftTime === rightTime;
+      case "!==":
+        return leftTime !== rightTime;
+      default:
+        return false;
+    }
+  }
+
+  // Fallback to regular comparison for non-dates
+  switch (operator) {
+    case ">":
+      if (
+        (typeof left === "number" || typeof left === "string") &&
+        (typeof right === "number" || typeof right === "string")
+      ) {
+        return left > right;
+      }
+      return false;
+    case "<":
+      if (
+        (typeof left === "number" || typeof left === "string") &&
+        (typeof right === "number" || typeof right === "string")
+      ) {
+        return left < right;
+      }
+      return false;
+    case ">=":
+      if (
+        (typeof left === "number" || typeof left === "string") &&
+        (typeof right === "number" || typeof right === "string")
+      ) {
+        return left >= right;
+      }
+      return false;
+    case "<=":
+      if (
+        (typeof left === "number" || typeof left === "string") &&
+        (typeof right === "number" || typeof right === "string")
+      ) {
+        return left <= right;
+      }
+      return false;
+    case "===":
+      return left === right;
+    case "!==":
+      return left !== right;
+    default:
+      return false;
+  }
+}

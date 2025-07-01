@@ -1,5 +1,5 @@
 import type { RuleJson } from "../serializer.js";
-import { getValueFromPath } from "../utils.js";
+import { compareValues, getValueFromPath } from "../utils.js";
 import type { OperatorInterace, OperatorValue } from "./operator_interace.js";
 
 export function ne(
@@ -31,7 +31,7 @@ export class Ne implements OperatorInterace {
     const leftResult = resolveValue(this.left);
     const rightResult = resolveValue(this.right);
 
-    return leftResult !== rightResult;
+    return compareValues(leftResult, rightResult, "!==");
   }
 
   toJSON(): RuleJson {
