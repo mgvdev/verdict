@@ -1,6 +1,6 @@
 {
   "name": "@mgvdev/verdict",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "description": "A lightweight, structured JSON decision tree library for Node.js applications",
   "private": true,
