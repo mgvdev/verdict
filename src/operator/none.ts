@@ -1,6 +1,6 @@
 import type { RuleJson } from "../serializer.js";
 import { getValueFromPath } from "../utils.js";
-import type { OperatorInterace } from "./operator_interace.js";
+import type { OperatorInterface } from "./operator_interace.js";
 
 /**
  * Creates a NONE operator that checks if no elements in an array match a condition.
@@ -44,8 +44,8 @@ import type { OperatorInterace } from "./operator_interace.js";
  */
 export function none(
   arrayPath: string,
-  condition: OperatorInterace
-): OperatorInterace {
+  condition: OperatorInterface
+): OperatorInterface {
   return new None(arrayPath, condition);
 }
 
@@ -72,7 +72,7 @@ export function none(
  * const result = noneOp.compute(context); // true (no critical violations)
  * ```
  */
-export class None implements OperatorInterace {
+export class None implements OperatorInterface {
   /**
    * Creates a new NONE operator instance.
    *
@@ -81,7 +81,7 @@ export class None implements OperatorInterace {
    */
   constructor(
     private arrayPath: string,
-    private condition: OperatorInterace
+    private condition: OperatorInterface
   ) {}
 
   /**

@@ -1,6 +1,6 @@
 import type { RuleJson } from "../serializer.js";
 import { getValueFromPath } from "../utils.js";
-import type { OperatorInterace, OperatorValue } from "./operator_interace.js";
+import type { OperatorInterface, OperatorValue } from "./operator_interace.js";
 
 /**
  * Creates a logical AND operator that evaluates multiple conditions.
@@ -34,7 +34,7 @@ import type { OperatorInterace, OperatorValue } from "./operator_interace.js";
  * );
  * ```
  */
-export function and(...args: Array<OperatorValue>): OperatorInterace {
+export function and(...args: Array<OperatorValue>): OperatorInterface {
   return new And(...args);
 }
 
@@ -55,7 +55,7 @@ export function and(...args: Array<OperatorValue>): OperatorInterace {
  * const result = andOp.compute(context); // true
  * ```
  */
-export class And implements OperatorInterace {
+export class And implements OperatorInterface {
   private args: Array<OperatorValue>;
 
   /**
@@ -99,7 +99,7 @@ export class And implements OperatorInterace {
         }
       }
       return typeof val === "object" && val !== null && "compute" in val
-        ? (val as OperatorInterace).compute(context)
+        ? (val as OperatorInterface).compute(context)
         : val;
     };
 

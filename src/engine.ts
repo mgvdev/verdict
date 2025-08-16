@@ -1,4 +1,4 @@
-import type { OperatorInterace } from "./operator/operator_interace.js";
+import type { OperatorInterface } from "./operator/operator_interace.js";
 
 /**
  * The core engine for evaluating decision rules.
@@ -47,7 +47,7 @@ export class Engine {
    * console.log(result); // true
    * ```
    */
-  evaluate(rule: OperatorInterace, context: object = {}): boolean {
+  evaluate(rule: OperatorInterface, context: object = {}): boolean {
     return rule.compute(context);
   }
 }

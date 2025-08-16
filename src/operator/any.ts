@@ -1,6 +1,6 @@
 import type { RuleJson } from "../serializer.js";
 import { getValueFromPath } from "../utils.js";
-import type { OperatorInterace } from "./operator_interace.js";
+import type { OperatorInterface } from "./operator_interace.js";
 
 /**
  * Creates an ANY operator that checks if at least one element in an array matches a condition.
@@ -44,8 +44,8 @@ import type { OperatorInterace } from "./operator_interace.js";
  */
 export function any(
   arrayPath: string,
-  condition: OperatorInterace
-): OperatorInterace {
+  condition: OperatorInterface
+): OperatorInterface {
   return new Any(arrayPath, condition);
 }
 
@@ -71,7 +71,7 @@ export function any(
  * const result = anyOp.compute(context); // true (150 > 100)
  * ```
  */
-export class Any implements OperatorInterace {
+export class Any implements OperatorInterface {
   /**
    * Creates a new ANY operator instance.
    *
@@ -80,7 +80,7 @@ export class Any implements OperatorInterace {
    */
   constructor(
     private arrayPath: string,
-    private condition: OperatorInterace
+    private condition: OperatorInterface
   ) {}
 
   /**

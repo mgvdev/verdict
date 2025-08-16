@@ -1,6 +1,6 @@
 import type { RuleJson } from "../serializer.js";
 import { getValueFromPath } from "../utils.js";
-import type { OperatorInterace, OperatorValue } from "./operator_interace.js";
+import type { OperatorInterface, OperatorValue } from "./operator_interace.js";
 
 /**
  * Creates a logical NOT operator that negates a condition.
@@ -35,7 +35,7 @@ import type { OperatorInterace, OperatorValue } from "./operator_interace.js";
  * );
  * ```
  */
-export function not(operand: OperatorValue): OperatorInterace {
+export function not(operand: OperatorValue): OperatorInterface {
   return new Not(operand);
 }
 
@@ -53,7 +53,7 @@ export function not(operand: OperatorValue): OperatorInterace {
  * const result = notOp.compute(context); // true
  * ```
  */
-export class Not implements OperatorInterace {
+export class Not implements OperatorInterface {
   /**
    * Creates a new NOT operator instance.
    *
@@ -88,7 +88,7 @@ export class Not implements OperatorInterace {
         }
       }
       return typeof val === "object" && val !== null && "compute" in val
-        ? (val as OperatorInterace).compute(context)
+        ? (val as OperatorInterface).compute(context)
         : val;
     };
 

@@ -5,7 +5,7 @@ import type { RuleJson } from "../serializer.js";
  * This includes primitive values, objects, and other operators.
  */
 export type OperatorValue =
-  | OperatorInterace
+  | OperatorInterface
   | string
   | number
   | boolean
@@ -35,7 +35,7 @@ export type OperatorValue =
  * }
  * ```
  */
-export interface OperatorInterace {
+export interface OperatorInterface {
   /**
    * Evaluates the operator's logic against the provided context.
    *

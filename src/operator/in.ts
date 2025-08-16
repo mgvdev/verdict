@@ -1,6 +1,6 @@
 import type { RuleJson } from "../serializer.js";
 import { getValueFromPath } from "../utils.js";
-import type { OperatorInterace, OperatorValue } from "./operator_interace.js";
+import type { OperatorInterface, OperatorValue } from "./operator_interace.js";
 
 /**
  * Creates an IN operator that checks if a value exists in a list.
@@ -36,7 +36,7 @@ import type { OperatorInterace, OperatorValue } from "./operator_interace.js";
 export function In(
   value: OperatorValue,
   list: Array<unknown>
-): OperatorInterace {
+): OperatorInterface {
   return new InOperator(value, list);
 }
 
@@ -54,7 +54,7 @@ export function In(
  * const result = inOp.compute(context); // true
  * ```
  */
-export class InOperator implements OperatorInterace {
+export class InOperator implements OperatorInterface {
   /**
    * Creates a new IN operator instance.
    *
@@ -91,7 +91,7 @@ export class InOperator implements OperatorInterace {
         }
       }
       return typeof val === "object" && val !== null && "compute" in val
-        ? (val as OperatorInterace).compute(context)
+        ? (val as OperatorInterface).compute(context)
         : val;
     };
 

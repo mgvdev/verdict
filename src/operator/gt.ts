@@ -1,6 +1,6 @@
 import type { RuleJson } from "../serializer.js";
 import { compareValues, getValueFromPath } from "../utils.js";
-import type { OperatorInterace, OperatorValue } from "./operator_interace.js";
+import type { OperatorInterface, OperatorValue } from "./operator_interace.js";
 
 /**
  * Creates a greater than comparison operator.
@@ -36,7 +36,7 @@ import type { OperatorInterace, OperatorValue } from "./operator_interace.js";
 export function gt(
   left: OperatorValue,
   right: OperatorValue
-): OperatorInterace {
+): OperatorInterface {
   return new Gt(left, right);
 }
 
@@ -54,7 +54,7 @@ export function gt(
  * const result = gtOp.compute(context); // true
  * ```
  */
-export class Gt implements OperatorInterace {
+export class Gt implements OperatorInterface {
   /**
    * Creates a new greater than operator instance.
    *
@@ -91,7 +91,7 @@ export class Gt implements OperatorInterace {
         }
       }
       return typeof val === "object" && val !== null && "compute" in val
-        ? (val as OperatorInterace).compute(context)
+        ? (val as OperatorInterface).compute(context)
         : val;
     };
 

@@ -1,15 +1,15 @@
 import type { RuleJson } from "../serializer.js";
 import { getValueFromPath } from "../utils.js";
-import type { OperatorInterace, OperatorValue } from "./operator_interace.js";
+import type { OperatorInterface, OperatorValue } from "./operator_interace.js";
 
 export function notIn(
   value: OperatorValue,
   list: Array<unknown>
-): OperatorInterace {
+): OperatorInterface {
   return new NotInOperator(value, list);
 }
 
-export class NotInOperator implements OperatorInterace {
+export class NotInOperator implements OperatorInterface {
   constructor(
     private value: OperatorValue,
     private list: Array<unknown>
@@ -24,7 +24,7 @@ export class NotInOperator implements OperatorInterace {
         }
       }
       return typeof val === "object" && val !== null && "compute" in val
-        ? (val as OperatorInterace).compute(context)
+        ? (val as OperatorInterface).compute(context)
         : val;
     };
 

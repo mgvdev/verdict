@@ -11,7 +11,7 @@ import { Ne } from "./operator/ne.js";
 import { None } from "./operator/none.js";
 import { Not } from "./operator/not.js";
 import { NotInOperator } from "./operator/notIn.js";
-import type { OperatorInterace } from "./operator/operator_interace.js";
+import type { OperatorInterface } from "./operator/operator_interace.js";
 import { Or } from "./operator/or.js";
 
 /**
@@ -45,7 +45,7 @@ export type RuleJson = {
  * the correct operator class based on the operator name in the JSON.
  */
 const operatorMap: {
-  [key: string]: new (...args: any[]) => OperatorInterace;
+  [key: string]: new (...args: any[]) => OperatorInterface;
 } = {
   and: And,
   eq: Eq,
@@ -111,7 +111,7 @@ export class RuleSerializer {
    * // Result: { operator: "eq", args: ["user.name", "John"] }
    * ```
    */
-  serialize(rule: OperatorInterace): RuleJson {
+  serialize(rule: OperatorInterface): RuleJson {
     return rule.toJSON();
   }
 
@@ -141,7 +141,7 @@ export class RuleSerializer {
    * // Returns an And operator containing Eq and Gt operators
    * ```
    */
-  deserialize(jsonRule: RuleJson): OperatorInterace {
+  deserialize(jsonRule: RuleJson): OperatorInterface {
     const OperatorClass = operatorMap[jsonRule.operator];
     if (!OperatorClass) {
       throw new Error(`Unknown operator: ${jsonRule.operator}`);

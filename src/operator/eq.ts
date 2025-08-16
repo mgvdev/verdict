@@ -1,6 +1,6 @@
 import type { RuleJson } from "../serializer.js";
 import { compareValues, getValueFromPath } from "../utils.js";
-import type { OperatorInterace, OperatorValue } from "./operator_interace.js";
+import type { OperatorInterface, OperatorValue } from "./operator_interace.js";
 
 /**
  * Creates an equality comparison operator.
@@ -35,7 +35,7 @@ import type { OperatorInterace, OperatorValue } from "./operator_interace.js";
 export function eq(
   left: OperatorValue,
   right: OperatorValue
-): OperatorInterace {
+): OperatorInterface {
   return new Eq(left, right);
 }
 
@@ -53,7 +53,7 @@ export function eq(
  * const result = eqOp.compute(context); // true
  * ```
  */
-export class Eq implements OperatorInterace {
+export class Eq implements OperatorInterface {
   /**
    * Creates a new equality operator instance.
    *
@@ -90,7 +90,7 @@ export class Eq implements OperatorInterace {
         }
       }
       return typeof val === "object" && val !== null && "compute" in val
-        ? (val as OperatorInterace).compute(context)
+        ? (val as OperatorInterface).compute(context)
         : val;
     };
 

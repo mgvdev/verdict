@@ -1,6 +1,6 @@
 import type { RuleJson } from "../serializer.js";
 import { getValueFromPath } from "../utils.js";
-import type { OperatorInterace } from "./operator_interace.js";
+import type { OperatorInterface } from "./operator_interace.js";
 
 /**
  * Creates an ALL operator that checks if all elements in an array match a condition.
@@ -44,8 +44,8 @@ import type { OperatorInterace } from "./operator_interace.js";
  */
 export function all(
   arrayPath: string,
-  condition: OperatorInterace
-): OperatorInterace {
+  condition: OperatorInterface
+): OperatorInterface {
   return new All(arrayPath, condition);
 }
 
@@ -71,7 +71,7 @@ export function all(
  * const result = allOp.compute(context); // true (all scores > 80)
  * ```
  */
-export class All implements OperatorInterace {
+export class All implements OperatorInterface {
   /**
    * Creates a new ALL operator instance.
    *
@@ -80,7 +80,7 @@ export class All implements OperatorInterace {
    */
   constructor(
     private arrayPath: string,
-    private condition: OperatorInterace
+    private condition: OperatorInterface
   ) {}
 
   /**

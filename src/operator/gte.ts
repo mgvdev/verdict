@@ -1,15 +1,15 @@
 import type { RuleJson } from "../serializer.js";
 import { compareValues, getValueFromPath } from "../utils.js";
-import type { OperatorInterace, OperatorValue } from "./operator_interace.js";
+import type { OperatorInterface, OperatorValue } from "./operator_interace.js";
 
 export function gte(
   left: OperatorValue,
   right: OperatorValue
-): OperatorInterace {
+): OperatorInterface {
   return new Gte(left, right);
 }
 
-export class Gte implements OperatorInterace {
+export class Gte implements OperatorInterface {
   constructor(
     private left: OperatorValue,
     private right: OperatorValue
@@ -24,7 +24,7 @@ export class Gte implements OperatorInterace {
         }
       }
       return typeof val === "object" && val !== null && "compute" in val
-        ? (val as OperatorInterace).compute(context)
+        ? (val as OperatorInterface).compute(context)
         : val;
     };
 
