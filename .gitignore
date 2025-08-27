@@ -120,5 +120,10 @@ public
 .pnp.*
 
 #intellij ide
-.idea/
-.idea/php.xml
+/.idea/
+/.idea/php.xml
+
+build/
+build
+
+/build/
