@@ -1,5 +1,5 @@
 import type { RuleJson } from "../serializer.js";
-import { compareValues, getValueFromPath } from "../utils.js";
+import { compareValues, getValueFromPath, self } from "../utils.js";
 import type { OperatorInterface, OperatorValue } from "./operator_interace.js";
 
 /**
@@ -83,6 +83,12 @@ export class Eq implements OperatorInterface {
    */
   compute(context?: object): boolean {
     const resolveValue = (val: unknown) => {
+      /**
+       * Return the self value for a flat array of values in the context
+       */
+      if (val === self) {
+        return context;
+      }
       if (typeof val === "string" && context) {
         const resolved = getValueFromPath(context, val);
         if (resolved !== undefined) {

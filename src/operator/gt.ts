@@ -1,5 +1,5 @@
 import type { RuleJson } from "../serializer.js";
-import { compareValues, getValueFromPath } from "../utils.js";
+import { compareValues, getValueFromPath, self } from "../utils.js";
 import type { OperatorInterface, OperatorValue } from "./operator_interace.js";
 
 /**
@@ -84,6 +84,9 @@ export class Gt implements OperatorInterface {
    */
   compute(context?: object): boolean {
     const resolveValue = (val: unknown) => {
+      if (val === self) {
+        return context;
+      }
       if (typeof val === "string" && context) {
         const resolved = getValueFromPath(context, val);
         if (resolved !== undefined) {

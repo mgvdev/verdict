@@ -9,7 +9,8 @@ export type OperatorValue =
   | string
   | number
   | boolean
-  | object;
+  | object
+  | symbol;
 
 /**
  * Interface that defines the contract for all rule operators.

@@ -64,7 +64,6 @@ export * from "./operator/any.js";
 export * from "./operator/eq.js";
 export * from "./operator/gt.js";
 export * from "./operator/gte.js";
-// Membership operators
 export * from "./operator/in.js";
 export * from "./operator/lt.js";
 export * from "./operator/lte.js";

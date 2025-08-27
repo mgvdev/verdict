@@ -15,7 +15,7 @@ import { not } from "../../src/operator/not.js";
 import { notIn } from "../../src/operator/notIn.js";
 import { or } from "../../src/operator/or.js";
 import { RuleSerializer } from "../../src/serializer.js";
-import { getValueFromPath } from "../../src/utils.js";
+import { getValueFromPath, self } from "../../src/utils.js";
 
 test.group("Engine", (_group) => {
   const engine = new Engine();
@@ -331,12 +331,20 @@ test.group("Array Operators", (_group) => {
         { resource: "users", action: "read", granted: false },
       ],
       scores: [85, 92, 78, 90],
+      list: ["apple", "banana", "orange"],
       flags: [],
     },
   };
 
   test("should evaluate ANY operator - positive case", ({ expect }) => {
     const rule = any("user.roles", eq("name", "admin"));
+    expect(engine.evaluate(rule, context)).toBe(true);
+  });
+
+  test("should evaluate any operator on flat list - positive case", ({
+    expect,
+  }) => {
+    const rule = any("user.list.*", eq(self, "apple"));
     expect(engine.evaluate(rule, context)).toBe(true);
   });
 

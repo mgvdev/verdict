@@ -1,9 +1,32 @@
 /**
+ * The 'self' symbol is used to access the current object itself when a flat array is provided.
+ * This garantes that the 'self' symbol is not used as a property name in the object.
+ *
+ * @example
+ *
+ * ```typescript
+ * const data = {
+ *   user: {
+ *        roles: ['admin', 'user']
+ *    }
+ *  }
+ *
+ *
+ * In('data.user.roles.*, eq(self, 'admin'));
+ *
+ * ```
+ *
+ */
+export const self = Symbol("self");
+
+/**
  * Retrieves a value from a nested object using a dot-notation path.
  *
  * This utility function allows you to access deeply nested properties
  * in an object using a string path like "user.profile.name". It safely
  * handles cases where intermediate properties are null or undefined.
+ *
+ * The 'self' symbol is used to access the current object itself when a flat array is provided.
  *
  * @param obj - The object to traverse
  * @param path - The dot-notation path to the desired property (e.g., "user.profile.name")
@@ -44,6 +67,7 @@
  * ```
  */
 export function getValueFromPath(obj: unknown, path: string): unknown {
+  console.log(obj, path);
   // Check if path contains wildcard
   if (path.includes("*")) {
     return getValueFromPathWithWildcard(obj, path);

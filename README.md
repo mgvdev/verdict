@@ -143,6 +143,18 @@ all('user.permissions', eq('granted', true))
 none('user.violations', eq('severity', 'critical'))
 ```
 
+**Flat array syntax:**
+
+Self reference is supported for flat arrays by using the `self` symbol exported from the `verdict` package:
+
+```typescript
+
+import { self } from '@mgvdev/verdict';
+
+// ANY - at least one element matches condition
+any('user.roles.*', eq(self, 'admin'));
+```
+
 ## 🎯 Usage Examples
 
 ### Basic User Authorization
