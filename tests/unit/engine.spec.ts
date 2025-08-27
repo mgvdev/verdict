@@ -336,6 +336,18 @@ test.group("Array Operators", (_group) => {
     },
   };
 
+  test("should serialize and deserialize self symbol", ({ expect }) => {
+    const rule = any("user.list.*", eq(self, "apple"));
+    const serializer = new RuleSerializer();
+
+    const serializedRule = serializer.serialize(rule);
+
+    const deserializedRule = serializer.deserialize(serializedRule);
+    console.log(deserializedRule);
+
+    expect(engine.evaluate(deserializedRule, context)).toBe(true);
+  }).tags(["array"]);
+
   test("should evaluate ANY operator - positive case", ({ expect }) => {
     const rule = any("user.roles", eq("name", "admin"));
     expect(engine.evaluate(rule, context)).toBe(true);

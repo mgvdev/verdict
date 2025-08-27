@@ -13,6 +13,7 @@ import { Not } from "./operator/not.js";
 import { NotInOperator } from "./operator/notIn.js";
 import type { OperatorInterface } from "./operator/operator_interace.js";
 import { Or } from "./operator/or.js";
+import { self, serializedSelfSymbol } from "./utils.js";
 
 /**
  * Represents the JSON structure of a serialized rule.
@@ -148,6 +149,9 @@ export class RuleSerializer {
     }
 
     const resolvedArgs = jsonRule.args.map((arg) => {
+      if (arg === serializedSelfSymbol) {
+        return self;
+      }
       if (typeof arg === "object" && arg !== null && "operator" in arg) {
         // If the argument is another rule, deserialize it recursively
         return this.deserialize(arg as RuleJson);

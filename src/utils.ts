@@ -20,6 +20,36 @@
 export const self = Symbol("self");
 
 /**
+ * String used when serializing the 'self' symbol.
+ * @example
+ * ```typescript
+ * const data = {
+ *   user: {
+ *        roles: ['admin', 'user']
+ *    }
+ *  }
+ *  const rule = In('data.user.roles.*, eq(self, 'admin'));
+ *  const serializedRule = rule.toJSON();
+ *  console.log(serializedRule);
+ *  // Output:
+ *  // {
+ *  //   operator: 'in',
+ *  //   args: [
+ *  //     'data.user.roles.*',
+ *  //     {
+ *  //       operator: 'eq',
+ *  //       args: [
+ *  //         '#$self$#',
+ *  //         'admin'
+ *  //       ]
+ *  //     }
+ *  //   ]
+ *  // }
+ * ````
+ */
+export const serializedSelfSymbol = "#$self$#";
+
+/**
  * Retrieves a value from a nested object using a dot-notation path.
  *
  * This utility function allows you to access deeply nested properties

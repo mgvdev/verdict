@@ -1,5 +1,10 @@
 import type { RuleJson } from "../serializer.js";
-import { compareValues, getValueFromPath, self } from "../utils.js";
+import {
+  compareValues,
+  getValueFromPath,
+  self,
+  serializedSelfSymbol,
+} from "../utils.js";
 import type { OperatorInterface, OperatorValue } from "./operator_interace.js";
 
 export function lte(
@@ -38,14 +43,19 @@ export class Lte implements OperatorInterface {
   }
 
   toJSON(): RuleJson {
+    const leftPart =
+      this.left === self
+        ? serializedSelfSymbol
+        : typeof this.left === "object" &&
+            this.left !== null &&
+            "toJSON" in this.left
+          ? this.left.toJSON()
+          : this.left;
+
     return {
       operator: "lte",
       args: [
-        typeof this.left === "object" &&
-        this.left !== null &&
-        "toJSON" in this.left
-          ? this.left.toJSON()
-          : this.left,
+        leftPart,
         typeof this.right === "object" &&
         this.right !== null &&
         "toJSON" in this.right
